@@ -5,12 +5,13 @@ services:
     env_file: .env
     build: .
     depends_on:
-      - postgres
+      - mongo
     ports:
       - "3000:3000"
       - "9229:9229"
 
-  postgres:
-    image: postgres:11.2-alpine
+  mongo:
+    image: mongo
     environment:
-      POSTGRES_PASSWORD: postgres
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root@heed
