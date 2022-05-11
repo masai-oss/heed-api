@@ -4,7 +4,6 @@
 
 - Docker setup
 - Nodejs + express with Typescript
-- TypeORM
 
 
 ## Setup
@@ -16,8 +15,25 @@
 - Other setup is basic `yarn install` and then `yarn dev`
 
 
+## Contributing
+- Follow (Conventional Commits)[https://www.conventionalcommits.org/en/v1.0.0/] format
+- All files must be named based on what they are doing. eg: `auth.route.ts` `auth.controller.ts` etc
+  - here `auth` is fetaure
+  - `route` and `controller` etc are the code structures
+  - take reference from [this](https://github.com/hagopj13/node-express-boilerplate) boilerplate if you want
+- Make sure that you have test cases written for every single feature you are adding
+- Make sure other tests are not failing before commiting
+- To cotnribute
+  - fork the repository
+  - create a new bran with the same feature/bug name: eg `feat/auth` `fix/issuenumber`
+  - implement the feature
+  - write test cases
+  - push to your branch `git push -u origin feat/auth` etc
+  - create a pull request to `dev` branch
+
 
 ## Todos:
+- git hooks
 - Routes:
   - All Auth
   - Sockets
