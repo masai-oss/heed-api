@@ -7,19 +7,17 @@ const jwt = require("jsonwebtoken");
 
 
 
-const {SESS_NAME = "sid",JWT_ACCESS_KEY="shivam"} = process.env
+const {SESS_NAME = "sessionid",JWT_ACCESS_KEY="shivam"} = process.env
 
 const Users = [
   {id:1,name:"shivam",email:"shivam@gmail.com",password:'password'},{id:2,name:"shiva",email:"shiva@gmail.com",password:'password'},{id:3,name:"pandey",email:"pandey@gmail.com",password:'password'},{id:4,name:"aditya",email:"aditya@gmail.com",password:'password'}
 ]
 
-const newToken = (user) => {
-    return jwt.sign({ user },JWT_ACCESS_KEY)
-}
+
 
 const authenicatelogin = (req: { session: any; },res: any,next: any) => {
-  console.log(req.session)
-  if (!req.session.token) {
+  console.log(req.session.id)
+  if (!req.session.isauth) {
     res.redirect("/login");
   }
   else { 
@@ -29,7 +27,7 @@ const authenicatelogin = (req: { session: any; },res: any,next: any) => {
 
 const authenicatehome = (req: { session: any; },res: any,next: any) => {
   console.log(req.session)
-  if (req.session.token) {
+  if (req.session.isauth) {
     res.redirect("/home");
   }
   else { 
@@ -38,10 +36,10 @@ const authenicatehome = (req: { session: any; },res: any,next: any) => {
 }
 
 loginauth.get("",(req: any,res: { send: (arg0: string) => any; }) => {
-    const {token} = req.session;
+    const {id} = req.session;
     return res.send(`
     <h1>Welcome to heed!</h1>
-    ${!token?`<a href='/login'>Login</a>
+    ${!id?`<a href='/login'>Login</a>
     <a href='/register'>Register</a>`:`<a href='/home'>Home</a>
     <form method="post" action="/logout">
       <button>Logout</button>
@@ -108,11 +106,9 @@ loginauth.post("/login", authenicatehome, async (req: { body: any; session: any;
     // else {
     //   res.status(400).json({ error: "Invalid Password" });
     // }
-    // else create a new token 
-    const token = newToken(user);
-
-    req.session.token = token;
-    // return the user and the token
+    // else create a authenicate the user
+    
+    req.session.isauth = true;
 
     return res.redirect("/home")
 
@@ -146,12 +142,13 @@ loginauth.post("/register", authenicatehome, async (req: any, res: any) => {
       // user.password = await bcrypt.hash(user.password, salt);
     
 
-      //  await Users.push(user);
+       Users.push(user);
 
-        // create the token
+        // authenicate the user 
+      
+    req.session.isauth = true;
+        
 
-      const token = newToken(user);
-      req.session.token = token;
       return res.redirect("/home")
     }
     
