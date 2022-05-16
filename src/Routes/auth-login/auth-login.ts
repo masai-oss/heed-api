@@ -1,11 +1,9 @@
-require("dotenv").config();
-const { Router } = require("express");
-const session = require("express-session");
-const bcrypt = require("bcrypt");
+import * as dotenv from "dotenv";
+dotenv.config()
+import { Router } from "express";
+import bcrypt from "bcrypt";
+import {authenicatehome,authenicatelogin} from "../../middleware/authenicate"
 const loginauth = Router();
-const jwt = require("jsonwebtoken");
-
-
 
 const {SESS_NAME = "sessionid",JWT_ACCESS_KEY="shivam"} = process.env
 
@@ -13,27 +11,6 @@ const Users = [
   {id:1,name:"shivam",email:"shivam@gmail.com",password:'password'},{id:2,name:"shiva",email:"shiva@gmail.com",password:'password'},{id:3,name:"pandey",email:"pandey@gmail.com",password:'password'},{id:4,name:"aditya",email:"aditya@gmail.com",password:'password'}
 ]
 
-
-
-const authenicatelogin = (req: { session: any; },res: any,next: any) => {
-  console.log(req.session.id)
-  if (!req.session.isauth) {
-    res.redirect("/login");
-  }
-  else { 
-    next()
-  }
-}
-
-const authenicatehome = (req: { session: any; },res: any,next: any) => {
-  console.log(req.session)
-  if (req.session.isauth) {
-    res.redirect("/home");
-  }
-  else { 
-    next()
-  }
-}
 
 loginauth.get("",(req: any,res: { send: (arg0: string) => any; }) => {
     const {id} = req.session;
@@ -44,9 +21,6 @@ loginauth.get("",(req: any,res: { send: (arg0: string) => any; }) => {
     <form method="post" action="/logout">
       <button>Logout</button>
     </form>`}
-      
-
-      
     `)
 })
 
@@ -55,7 +29,6 @@ loginauth.get("/home",authenicatelogin,(req: any,res: { send: (arg0: string) => 
   return res.send(`
     <h1>Welcome to Home Page</h1>
   `)
-
 })
 
 loginauth.get("/login",authenicatehome,(req: any,res: any) => {
@@ -112,7 +85,7 @@ loginauth.post("/login", authenicatehome, async (req: { body: any; session: any;
 
     return res.redirect("/home")
 
-} catch (e) {
+  } catch (e: any) {
     return res.status(500).json({ status: "failed", message: e.message });
 }
   
@@ -159,7 +132,7 @@ loginauth.post("/register", authenicatehome, async (req: any, res: any) => {
 })
 
 loginauth.post("/logout", authenicatelogin, (req: any, res: any) => {
-  req.session.destroy(error => {
+  req.session.destroy((error: any)  => {
     if (error) {
       return res.redirect("/home")
     }
