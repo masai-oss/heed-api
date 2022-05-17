@@ -1,4 +1,14 @@
-const authenicatelogin = (req: { session: any; },res: any,next: any) => {
+import { NextFunction, Request, Response } from "express";
+
+declare global {
+  namespace Express {
+    interface Session {
+      isauth?: Boolean
+    }
+  }
+}
+
+const authenicatelogin = (req: Request & {session: Express.Session},res:Response,next: NextFunction) => {
     // console.log(req.session.id)
     if (!req.session.isauth) {
       res.redirect("/login");
@@ -8,7 +18,7 @@ const authenicatelogin = (req: { session: any; },res: any,next: any) => {
     }
   }
   
-  const authenicatehome = (req: { session: any; },res: any,next: any) => {
+  const authenicatehome = (req: Request & {session: Express.Session},res: Response,next: NextFunction) => {
     // console.log(req.session)
     if (req.session.isauth) {
       res.redirect("/home");

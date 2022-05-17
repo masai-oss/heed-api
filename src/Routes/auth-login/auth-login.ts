@@ -1,9 +1,11 @@
 import * as dotenv from "dotenv";
 dotenv.config()
-import { Router } from "express";
-import bcrypt from "bcrypt";
+import { Router,Request,Response } from "express";
+// import bcrypt from "bcrypt";
 import {authenicatehome,authenicatelogin} from "../../middleware/authenicate"
+
 const loginauth = Router();
+
 
 const {SESS_NAME = "sessionid",JWT_ACCESS_KEY="shivam"} = process.env
 
@@ -12,7 +14,7 @@ const Users = [
 ]
 
 
-loginauth.get("",(req: any,res: { send: (arg0: string) => any; }) => {
+loginauth.get("",(req: Request,res: Response) => {
     const {id} = req.session;
     return res.send(`
     <h1>Welcome to heed!</h1>
@@ -24,14 +26,14 @@ loginauth.get("",(req: any,res: { send: (arg0: string) => any; }) => {
     `)
 })
 
-loginauth.get("/home",authenicatelogin,(req: any,res: { send: (arg0: string) => any; }) => {
+loginauth.get("/home",authenicatelogin,(req: Request,res: Response ) => {
 
   return res.send(`
     <h1>Welcome to Home Page</h1>
   `)
 })
 
-loginauth.get("/login",authenicatehome,(req: any,res: any) => {
+loginauth.get("/login",authenicatehome,(req: Request,res: Response) => {
    return res.send(`
      <h1>Login</h1>
      <form method="post" action="/login">
@@ -43,7 +45,7 @@ loginauth.get("/login",authenicatehome,(req: any,res: any) => {
    `)
 })
 
-loginauth.get("/register", authenicatehome, (req: any, res: { send: (arg0: string) => any; }) => {
+loginauth.get("/register", authenicatehome, (req: Request, res: Response) => {
   return res.send(`
   <h1>REgister</h1>
   <form method="post" action="/register">
@@ -56,14 +58,13 @@ loginauth.get("/register", authenicatehome, (req: any, res: { send: (arg0: strin
   `)
 })
 
-loginauth.post("/login", authenicatehome, async (req: { body: any; session: any; },res: any) => {
+loginauth.post("/login", authenicatehome, async (req: Request & {session: Express.Session},res: Response) => {
 
   try {
-    const { email, password } = req.body;
     // check the format of email first if not proper throw an error 
 
     // else check wheather email is present
-    const user = Users.find(user => user.email==email && user.password == password );
+    const user = Users.find(user => user.email==req.body.email && user.password == req.body.password );
 
     // if not present throw an error 
     if (!user) return res.status(400).json({ status: "failed", message: "Provide a valid email address" })
@@ -89,10 +90,9 @@ loginauth.post("/login", authenicatehome, async (req: { body: any; session: any;
     return res.status(500).json({ status: "failed", message: e.message });
 }
   
-
 })
 
-loginauth.post("/register", authenicatehome, async (req: any, res: any) => {
+loginauth.post("/register", authenicatehome, (req: Request & {session: Express.Session},res: Response) => {
   
   const { name, email, password } = req.body;
 
@@ -131,8 +131,8 @@ loginauth.post("/register", authenicatehome, async (req: any, res: any) => {
     
 })
 
-loginauth.post("/logout", authenicatelogin, (req: any, res: any) => {
-  req.session.destroy((error: any)  => {
+loginauth.post("/logout", authenicatelogin, (req: Request, res: Response) => {
+  req.session.destroy((error: Error)  => {
     if (error) {
       return res.redirect("/home")
     }
