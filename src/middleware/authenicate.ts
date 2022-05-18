@@ -8,7 +8,7 @@ declare global {
   }
 }
 
-const authenicatelogin = (req: Request & {session: Express.Session},res:Response,next: NextFunction) => {
+const authenicateLogin = (req: Request & {session: Express.Session},res:Response,next: NextFunction) => {
     // console.log(req.session.id)
     if (!req.session.isauth) {
       res.redirect("/login");
@@ -18,7 +18,7 @@ const authenicatelogin = (req: Request & {session: Express.Session},res:Response
     }
   }
   
-  const authenicatehome = (req: Request & {session: Express.Session},res: Response,next: NextFunction) => {
+  const authenicateHome = (req: Request & {session: Express.Session},res: Response,next: NextFunction) => {
     // console.log(req.session)
     if (req.session.isauth) {
       res.redirect("/home");
@@ -28,4 +28,4 @@ const authenicatelogin = (req: Request & {session: Express.Session},res:Response
     }
   }
 
-  export {authenicatehome,authenicatelogin}
+  export {authenicateHome,authenicateLogin}
